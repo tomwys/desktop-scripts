@@ -1,0 +1,5 @@
+. /etc/bash_completion.d/virtualenvwrapper
+DIR=`pwd`
+cdvirtualenv
+cd bin
+echo "alias cddev='cd $DIR'" >> postactivate
