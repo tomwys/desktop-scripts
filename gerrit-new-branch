@@ -1,0 +1,16 @@
+#!/bin/bash
+EXPECTED_ARGS=2
+E_BADARGS=65
+
+if [ $# -ne $EXPECTED_ARGS ]
+    then
+      echo "Usage: `basename $0` {project_name} {branch_name}"
+      exit $E_BADARGS
+fi
+
+cd /tmp
+gerrit-clone $1
+cd $1
+git push origin HEAD:refs/heads/$2
+cd ..
+rm $1 -rf
