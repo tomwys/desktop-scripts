@@ -23,6 +23,6 @@ if [ -a ".git" ]; then
 fi;
 pushd /tmp/$1
 git fetch origin
-git push origin origin/master:refs/heads/$2
+git push origin origin/develop:refs/heads/$2
 popd
 rm /tmp/$1 -rf
