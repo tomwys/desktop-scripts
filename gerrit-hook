@@ -1,1 +1,3 @@
+#!/bin/bash
+
 scp -p -P 29418 review.pozytywnie.pl:hooks/commit-msg .git/hooks/
