@@ -1,2 +1,0 @@
-sudo -u postgres psql -c "DROP DATABASE \"develop-$1\""
-postgresql-create-develop-database $1

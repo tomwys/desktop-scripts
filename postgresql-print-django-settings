@@ -2,10 +2,7 @@ cat << eof
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'develop-$1',
-        'USER': 'develop',
-        'PASSWORD': 'develop',
-        'HOST': 'localhost',
+        'NAME': '$1',
     }
 }
 eof
