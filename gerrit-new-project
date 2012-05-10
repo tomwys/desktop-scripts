@@ -1,0 +1,10 @@
+#!/bin/bash
+EXPECTED_ARGS=1
+E_BADARGS=65
+
+if [ $# -ne $EXPECTED_ARGS ]
+    then
+      echo "Usage: `basename $0` {project_name}"
+      exit $E_BADARGS
+fi
+ssh -p 29418 review.pozytywnie.pl gerrit create-project --name $1
