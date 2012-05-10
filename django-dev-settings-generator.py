@@ -12,6 +12,7 @@ You can modify dev_settings_custom.py to create custom settings.
 """
 
 import argparse
+from os import path
 import sys
 
 class Command(object):
@@ -20,6 +21,7 @@ class Command(object):
                                          formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('project', type=str, nargs=1)
         parser.add_argument('--debug-toolbar', action='store_true', help='add django debug toolbar to generated settings')
+        parser.add_argument('--include', action='append', help='include file from ~/.django-dev-settings-generator/include/*.py')
         self.generate_settings_file(parser.parse_args())
         self.create_custom_settings_file()
 
@@ -47,6 +49,7 @@ class Command(object):
             settings.write(self.database_settings(project))
             if(args.debug_toolbar):
                 settings.write(self.debug_toolbar())
+            settings.write(self.include_files(args.include))
 
     def import_project_settings(self, project):
         return "from %s.settings import *\n" % project.replace('-', '_')
@@ -76,6 +79,14 @@ class Command(object):
             "# Generated automatically with parameters:\n"
             "# " + " ".join(sys.argv[1:]) + "\n"
         )
+
+    def include_files(self, files):
+        result = ""
+        for filename in files or []:
+            filepath = path.expanduser('~/.django-dev-settings-generator/include/%s.py' % filename)
+            result += "\n\n# %s\n" % filepath
+            result += open(filepath).read()
+        return result
 
 if __name__ == '__main__':
     Command().run()
