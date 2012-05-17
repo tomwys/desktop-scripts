@@ -22,6 +22,7 @@ class Command(object):
         parser.add_argument('project', type=str, nargs=1)
         parser.add_argument('--debug-toolbar', action='store_true', help='add django debug toolbar to generated settings')
         parser.add_argument('--include', action='append', help='include file from ~/.dev-settings-generator/include/*.py')
+	parser.add_argument('--postgis', action='store_true', help='use postgis django db backend')
         self.generate_settings_file(parser.parse_args())
         self.create_custom_settings_file()
 
@@ -46,7 +47,7 @@ class Command(object):
             settings.write(self.generator_information())
             settings.write(self.import_project_settings(project))
             settings.write("DEBUG = True\nTEMPLATE_DEBUG = True \n")
-            settings.write(self.database_settings(project))
+            settings.write(self.database_settings(project, postgis=args.postgis))
             if(args.debug_toolbar):
                 settings.write(self.debug_toolbar())
             settings.write(self.include_files(args.include))
@@ -54,15 +55,16 @@ class Command(object):
     def import_project_settings(self, project):
         return "from %s.settings import *\n" % project.replace('-', '_')
 
-    def database_settings(self, project):
+    def database_settings(self, project, postgis=False):
+        database_backend = "django.contrib.gis.db.backends.postgis" if postgis else "django.db.backends.postgresql_psycopg2"
         return (
             "DATABASES = {\n"
             "    'default': {\n"
-            "        'ENGINE': 'django.db.backends.postgresql_psycopg2',\n"
+            "        'ENGINE': '%s',\n"
             "        'NAME': '%s',\n"
             "    }\n"
             "}\n"
-        ) % project
+        ) % (database_backend, project)
 
     def debug_toolbar(self):
         return (
