@@ -21,7 +21,7 @@ class Command(object):
                                          formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('project', type=str, nargs=1)
         parser.add_argument('--debug-toolbar', action='store_true', help='add django debug toolbar to generated settings')
-        parser.add_argument('--include', action='append', help='include file from ~/.django-dev-settings-generator/include/*.py')
+        parser.add_argument('--include', action='append', help='include file from ~/.dev-settings-generator/include/*.py')
         self.generate_settings_file(parser.parse_args())
         self.create_custom_settings_file()
 
@@ -83,7 +83,7 @@ class Command(object):
     def include_files(self, files):
         result = ""
         for filename in files or []:
-            filepath = path.expanduser('~/.django-dev-settings-generator/include/%s.py' % filename)
+            filepath = path.expanduser('~/.dev-settings-generator/include/%s.py' % filename)
             result += "\n\n# %s\n" % filepath
             result += open(filepath).read()
         return result
