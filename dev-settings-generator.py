@@ -22,7 +22,7 @@ class Command(object):
         parser.add_argument('project', type=str, nargs=1)
         parser.add_argument('--debug-toolbar', action='store_true', help='add django debug toolbar to generated settings')
         parser.add_argument('--include', action='append', help='include file from ~/.dev-settings-generator/include/*.py')
-	parser.add_argument('--postgis', action='store_true', help='use postgis django db backend')
+        parser.add_argument('--postgis', action='store_true', help='use postgis django db backend')
         self.generate_settings_file(parser.parse_args())
         self.create_custom_settings_file()
 
