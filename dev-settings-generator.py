@@ -12,6 +12,7 @@ You can modify dev_settings_custom.py to create custom settings.
 """
 
 import argparse
+from distutils.sysconfig import get_python_lib
 from os import path
 import sys
 
@@ -58,10 +59,14 @@ class Command(object):
 
     def database_settings(self, project, postgis=False, sqlite=False):
         database_backend = 'django.db.backends.postgresql_psycopg2'
+        database_name = project
         if postgis:
             database_backend = 'django.contrib.gis.db.backends.postgis'
         elif sqlite:
             database_backend = 'django.db.backends.sqlite3'
+            site_packages = get_python_lib()
+            database = '%s.sqlite' % project
+            database_name = path.join(site_packages, database)
 
         return (
             "DATABASES = {\n"
@@ -70,7 +75,7 @@ class Command(object):
             "        'NAME': '%s',\n"
             "    }\n"
             "}\n"
-        ) % (database_backend, project)
+        ) % (database_backend, database_name)
 
     def debug_toolbar(self):
         return (
