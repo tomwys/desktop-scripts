@@ -12,6 +12,7 @@ You can modify dev_settings_custom.py to create custom settings.
 """
 
 import argparse
+from distutils.sysconfig import get_python_lib
 from os import path
 import sys
 
@@ -22,7 +23,8 @@ class Command(object):
         parser.add_argument('project', type=str, nargs=1)
         parser.add_argument('--debug-toolbar', action='store_true', help='add django debug toolbar to generated settings')
         parser.add_argument('--include', action='append', help='include file from ~/.dev-settings-generator/include/*.py')
-	parser.add_argument('--postgis', action='store_true', help='use postgis django db backend')
+        parser.add_argument('--postgis', action='store_true', help='use postgis django db backend')
+        parser.add_argument('--sqlite', action='store_true', help='use sqlite3 django db backend')
         self.generate_settings_file(parser.parse_args())
         self.create_custom_settings_file()
 
@@ -47,7 +49,7 @@ class Command(object):
             settings.write(self.generator_information())
             settings.write(self.import_project_settings(project))
             settings.write("DEBUG = True\nTEMPLATE_DEBUG = True \n")
-            settings.write(self.database_settings(project, postgis=args.postgis))
+            settings.write(self.database_settings(project, postgis=args.postgis, sqlite=args.sqlite))
             if(args.debug_toolbar):
                 settings.write(self.debug_toolbar())
             settings.write(self.include_files(args.include))
@@ -55,8 +57,17 @@ class Command(object):
     def import_project_settings(self, project):
         return "from %s.settings import *\n" % project.replace('-', '_')
 
-    def database_settings(self, project, postgis=False):
-        database_backend = "django.contrib.gis.db.backends.postgis" if postgis else "django.db.backends.postgresql_psycopg2"
+    def database_settings(self, project, postgis=False, sqlite=False):
+        database_backend = 'django.db.backends.postgresql_psycopg2'
+        database_name = project
+        if postgis:
+            database_backend = 'django.contrib.gis.db.backends.postgis'
+        elif sqlite:
+            database_backend = 'django.db.backends.sqlite3'
+            site_packages = get_python_lib()
+            database = '%s.sqlite' % project
+            database_name = path.join(site_packages, database)
+
         return (
             "DATABASES = {\n"
             "    'default': {\n"
@@ -64,7 +75,7 @@ class Command(object):
             "        'NAME': '%s',\n"
             "    }\n"
             "}\n"
-        ) % (database_backend, project)
+        ) % (database_backend, database_name)
 
     def debug_toolbar(self):
         return (
