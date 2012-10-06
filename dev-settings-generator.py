@@ -28,7 +28,7 @@ class Command(object):
         self.create_main_settings_file()
 
     def create_custom_settings_file(self):
-        open('dev_settings_custom.py', 'w+').close()
+        open('dev_settings_custom.py', 'a').close()
 
     def create_main_settings_file(self):
         with open('dev_settings.py', 'w+') as settings:
