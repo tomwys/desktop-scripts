@@ -1,3 +1,0 @@
-#!/bin/bash
-# https://www.evernote.com/shard/s49/sh/66218f2e-7fc7-45e0-9598-dffe921e1362/97c55a7f3ceea807b393a98e7a3f8cd1
-wget 'http://code.djangoproject.com/changeset/15911?format=diff&new=15911' -O /dev/stdout | patch -p3
