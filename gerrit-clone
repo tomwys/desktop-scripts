@@ -7,6 +7,6 @@ if [ $# -ne $EXPECTED_ARGS ]
       echo "Usage: `basename $0` {project_name}"
       exit $E_BADARGS
 fi
-git clone ssh://$USER@review.pozytywnie.pl:29418/$1 $1 &&\
-cd $1 &&\
+git clone ssh://$USER@review.pozytywnie.pl:29418/$1 $1 &&
+cd $1 &&
 gerrit-hook
